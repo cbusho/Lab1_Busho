@@ -69,50 +69,54 @@ begin
 			blank_buf_reg <= '0';
 			completed_buf_reg <= '0';
 			column_buf_reg <= "00000000000";
-			count_reg <= "00000000000";
 		elsif (clk'event and clk = '1') then
 			hsync_buf_reg <= hsync_next;
 			blank_buf_reg <= blank_next;
 			completed_buf_reg <= completed_next;
 			column_buf_reg <= column_next;
+		end if;
+	end process;	
+	
+-- count logic
+	process(clk, reset)
+	begin
+		if (reset = '1') then
+			count_reg <= (others => '0');
+		elsif (clk'event and clk = '1') then
 			count_reg <= count_next;
 		end if;
 	end process;	
 	
+	count_next <= 	(others => '0') when (state_reg /= state_next) else
+						count_reg + 1;
+	
 -- next state logic
 	process(state_reg, count_reg)
 	begin
+		state_next <= activeVideo;
 		case state_reg is
 			when activeVideo =>
-				if count_reg = 640 then
+				if count_reg = "01010000000" then
 					state_next <= frontPorch;
-					count_reg <= "00000000000";
 				else
-					count_next <= count_reg + "00000000001";
 					state_next <= activeVideo;
 				end if;	
 			when frontPorch =>
 				if count_reg = "00000010001" then
 					state_next <= sync;
-					count_reg <= "00000000000";
 				else
-					count_next <= count_reg + "00000000001";
 					state_next <= frontPorch;
 				end if;
 			when sync =>
 				if count_reg = "00001100000" then
 					state_next <= backPorch;
-					count_reg <= "00000000000";
 				else
-					count_next <= count_reg + "00000000001";
 					state_next <= sync;
 				end if;
 			when backPorch =>
 				if count_reg = "00000110000" then
 					state_next <= completedState;
-					count_reg <= "00000000000";
 				else
-					count_next <= count_reg + "00000000001";
 					state_next <= backPorch;
 				end if;
 			when completedState =>
@@ -121,7 +125,7 @@ begin
 	end process;
 
 --look ahead output logic
-	process(state_next)
+	process(state_next, count_reg)
 	begin
 		hsync_next <= '1';
 		blank_next <= '0';
