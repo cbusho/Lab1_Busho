@@ -43,10 +43,11 @@ ARCHITECTURE behavior OF v_sync_gen_tb IS
     PORT(
          clk : IN  std_logic;
          reset : IN  std_logic;
+			h_completed: IN std_logic;
          v_sync : OUT  std_logic;
          blank : OUT  std_logic;
          completed : OUT  std_logic;
-         column : OUT  unsigned(10 downto 0)
+         row : OUT  unsigned(10 downto 0)
         );
     END COMPONENT;
     
@@ -54,12 +55,13 @@ ARCHITECTURE behavior OF v_sync_gen_tb IS
    --Inputs
    signal clk : std_logic := '0';
    signal reset : std_logic := '0';
+	signal h_completed : std_logic := '1';
 
  	--Outputs
    signal v_sync : std_logic;
    signal blank : std_logic;
    signal completed : std_logic;
-   signal column : unsigned(10 downto 0);
+   signal row : unsigned(10 downto 0);
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
@@ -70,10 +72,11 @@ BEGIN
    uut: v_sync_gen PORT MAP (
           clk => clk,
           reset => reset,
+			 h_completed => h_completed,
           v_sync => v_sync,
           blank => blank,
           completed => completed,
-          column => column
+          row => row
         );
 
    -- Clock process definitions
@@ -98,6 +101,8 @@ BEGIN
       --wait for clk_period*10;
 
 		reset <= '0';
+		wait for 100 ns;	
+		h_completed <= '1';
       -- insert stimulus here 
       wait;
    end process;

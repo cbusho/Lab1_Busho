@@ -114,7 +114,7 @@ begin
 					state_next <= sync;
 				end if;
 			when backPorch =>
-				if count_reg = "00000110000" then
+				if count_reg = "00000101111" then
 					state_next <= completedState;
 				else
 					state_next <= backPorch;

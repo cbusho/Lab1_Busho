@@ -33,10 +33,11 @@ use IEEE.NUMERIC_STD.ALL;
 entity v_sync_gen is
     port ( clk       : in  std_logic;
            reset     : in  std_logic;
+			  h_completed : in std_logic;
            v_sync    : out std_logic;
            blank     : out std_logic;
            completed : out std_logic;
-           column    : out unsigned(10 downto 0)
+           row    : out unsigned(10 downto 0)
      );
 end v_sync_gen;
 
@@ -47,7 +48,7 @@ architecture Behavioral of v_sync_gen is
 	signal state_reg, state_next: state_type;
 	signal vsync_next, vsync_buf_reg, blank_next, blank_buf_reg, 
 			 completed_next, completed_buf_reg: std_logic;
-	signal count_reg, count_next, column_next, column_buf_reg: unsigned(10 downto 0);				
+	signal count_reg, count_next, row_next, row_buf_reg: unsigned(10 downto 0);				
 
 begin
 
@@ -68,12 +69,12 @@ begin
 			vsync_buf_reg <= '0';
 			blank_buf_reg <= '0';
 			completed_buf_reg <= '0';
-			column_buf_reg <= "00000000000";
+			row_buf_reg <= "00000000000";
 		elsif (clk'event and clk = '1') then
 			vsync_buf_reg <= vsync_next;
 			blank_buf_reg <= blank_next;
 			completed_buf_reg <= completed_next;
-			column_buf_reg <= column_next;
+			row_buf_reg <= row_next;
 		end if;
 	end process;	
 	
@@ -88,7 +89,8 @@ begin
 	end process;	
 	
 	count_next <= 	(others => '0') when (state_reg /= state_next) else
-						count_reg + 1;
+						count_reg + 1 when h_completed = '1' else
+						count_reg;
 	
 -- next state logic
 	process(state_reg, count_reg)
@@ -130,33 +132,33 @@ begin
 		vsync_next <= '1';
 		blank_next <= '0';
 		completed_next <= '0';
-		column_next <= "00000000000"; --default value
+		row_next <= "00000000000"; --default value
 		case state_next is
 			when activeVideo =>
 				vsync_next <= '1';
 				blank_next <= '0';
 				completed_next <= '0';
-				column_next <= count_reg;
+				row_next <= count_reg;
 			when frontPorch =>
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '0';
-				column_next <= "00000000000";
+				row_next <= "00000000000";
 			when sync =>
 				vsync_next <= '0';
 				blank_next <= '1';	
 				completed_next <= '0';
-				column_next <= "00000000000";
+				row_next <= "00000000000";
 			when backPorch =>
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '0';
-				column_next <= "00000000000";
+				row_next <= "00000000000";
 			when completedState =>
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '1';
-				column_next <= "00000000000";
+				row_next <= "00000000000";
 		end case;
 	end process;
 
@@ -164,7 +166,7 @@ begin
 	completed <= completed_buf_reg;
 	v_sync <= vsync_buf_reg;
 	blank <= blank_buf_reg;
-	column <= column_buf_reg;
+	row <= row_buf_reg;
 
 end Behavioral;
 
