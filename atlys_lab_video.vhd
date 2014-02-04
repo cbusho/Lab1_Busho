@@ -99,7 +99,7 @@ begin
 
     -- TODO: VGA component instantiation
 	 Inst_vga_sync: vga_sync PORT MAP(
-		clk => clk,
+		clk => pixel_clk,
 		reset => reset,
 		h_sync => h_sync_sig,
 		v_sync => v_sync_sig,

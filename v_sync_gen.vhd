@@ -96,27 +96,28 @@ begin
 	process(state_reg, count_reg)
 	begin
 		state_next <= activeVideo;
+		if (h_completed = '1') then
 		case state_reg is
 			when activeVideo =>
-				if count_reg = "00111100000" then
+				if count_reg = "00111011111" then
 					state_next <= frontPorch;
 				else
 					state_next <= activeVideo;
 				end if;
 			when frontPorch =>
-				if count_reg = "00000001010" then
+				if count_reg = "00000001001" then
 					state_next <= sync;
 				else
 					state_next <= frontPorch;
 				end if;
 			when sync =>
-				if count_reg = "00000000010" then
+				if count_reg = "00000000001" then
 					state_next <= backPorch;
 				else
 					state_next <= sync;
 				end if;
 			when backPorch =>
-				if count_reg = "00000100001" then
+				if count_reg = "00000011111" then
 					state_next <= completedState;
 				else
 					state_next <= backPorch;
@@ -124,10 +125,11 @@ begin
 			when completedState =>
 				state_next <= activeVideo;			
 		end case;
+		end if;
 	end process;
 
 --look ahead output logic
-	process(state_next, count_reg)
+	process(state_next, count_next)
 	begin
 		vsync_next <= '1';
 		blank_next <= '0';
@@ -138,7 +140,7 @@ begin
 				vsync_next <= '1';
 				blank_next <= '0';
 				completed_next <= '0';
-				row_next <= count_reg;
+				row_next <= count_next;
 			when frontPorch =>
 				vsync_next <= '1';
 				blank_next <= '1';
