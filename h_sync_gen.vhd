@@ -62,14 +62,9 @@ begin
 	end process;
 	
 --look ahead output buffer	
-	process(clk, reset)
+	process(clk)
 	begin
-		if (reset = '1') then
-			hsync_buf_reg <= '0';
-			blank_buf_reg <= '0';
-			completed_buf_reg <= '0';
-			column_buf_reg <= "00000000000";
-		elsif (clk'event and clk = '1') then
+		if (clk'event and clk = '1') then
 			hsync_buf_reg <= hsync_next;
 			blank_buf_reg <= blank_next;
 			completed_buf_reg <= completed_next;
@@ -167,4 +162,3 @@ begin
 	column <= column_buf_reg;
 
 end Behavioral;
-

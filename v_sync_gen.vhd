@@ -63,14 +63,9 @@ begin
 	end process;
 	
 --look ahead output buffer	
-	process(clk, reset)
+	process(clk)
 	begin
-		if (reset = '1') then
-			vsync_buf_reg <= '0';
-			blank_buf_reg <= '0';
-			completed_buf_reg <= '0';
-			row_buf_reg <= "00000000000";
-		elsif (clk'event and clk = '1') then
+		if (clk'event and clk = '1') then
 			vsync_buf_reg <= vsync_next;
 			blank_buf_reg <= blank_next;
 			completed_buf_reg <= completed_next;
@@ -93,38 +88,38 @@ begin
 						count_reg;
 	
 -- next state logic
-	process(state_reg, count_reg)
+	process(state_reg, count_reg, h_completed)
 	begin
-		state_next <= activeVideo;
+		state_next <= state_reg;
 		if (h_completed = '1') then
-		case state_reg is
-			when activeVideo =>
-				if count_reg = "00111011111" then
-					state_next <= frontPorch;
-				else
-					state_next <= activeVideo;
-				end if;
-			when frontPorch =>
-				if count_reg = "00000001001" then
-					state_next <= sync;
-				else
-					state_next <= frontPorch;
-				end if;
-			when sync =>
-				if count_reg = "00000000001" then
-					state_next <= backPorch;
-				else
-					state_next <= sync;
-				end if;
-			when backPorch =>
-				if count_reg = "00000011111" then
-					state_next <= completedState;
-				else
-					state_next <= backPorch;
-				end if;
-			when completedState =>
-				state_next <= activeVideo;			
-		end case;
+			case state_reg is
+				when activeVideo =>
+					if count_reg = 479 then
+						state_next <= frontPorch;
+					else
+						state_next <= activeVideo;
+					end if;
+				when frontPorch =>
+					if count_reg = 9 then
+						state_next <= sync;
+					else
+						state_next <= frontPorch;
+					end if;
+				when sync =>
+					if count_reg = 1 then
+						state_next <= backPorch;
+					else
+						state_next <= sync;
+					end if;
+				when backPorch =>
+					if count_reg = 32 then
+						state_next <= completedState;
+					else
+						state_next <= backPorch;
+					end if;
+				when completedState =>
+					state_next <= activeVideo;			
+			end case;
 		end if;
 	end process;
 
@@ -134,7 +129,7 @@ begin
 		vsync_next <= '1';
 		blank_next <= '0';
 		completed_next <= '0';
-		row_next <= "00000000000"; --default value
+		row_next <= (others => '0'); --default value
 		case state_next is
 			when activeVideo =>
 				vsync_next <= '1';
@@ -145,22 +140,22 @@ begin
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '0';
-				row_next <= "00000000000";
+				row_next <= (others => '0');
 			when sync =>
 				vsync_next <= '0';
 				blank_next <= '1';	
 				completed_next <= '0';
-				row_next <= "00000000000";
+				row_next <= (others => '0');
 			when backPorch =>
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '0';
-				row_next <= "00000000000";
+				row_next <= (others => '0');
 			when completedState =>
 				vsync_next <= '1';
 				blank_next <= '1';
 				completed_next <= '1';
-				row_next <= "00000000000";
+				row_next <= (others => '0');
 		end case;
 	end process;
 
@@ -171,6 +166,3 @@ begin
 	row <= row_buf_reg;
 
 end Behavioral;
-
-
-
