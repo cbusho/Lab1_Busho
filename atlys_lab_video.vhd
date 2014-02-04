@@ -149,4 +149,3 @@ begin
         ( O  => TMDS(3), OB => TMDSB(3), I  => clock_s );
 		  
 end Behavioral;
-
