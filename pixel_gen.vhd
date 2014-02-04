@@ -33,6 +33,8 @@ entity pixel_gen is
     Port ( row : in  unsigned (10 downto 0);
            column : in  unsigned (10 downto 0);
            blank : in  STD_LOGIC;
+			  switch_6: in STD_LOGIC;
+			  switch_7: in STD_LOGIC;			  
            r : out  STD_LOGIC_VECTOR (7 downto 0);
            g : out  STD_LOGIC_VECTOR (7 downto 0);
            b : out  STD_LOGIC_VECTOR (7 downto 0));
@@ -50,14 +52,50 @@ begin
 	begin
 		if (blank = '1') then
 			color <= black;
-		elsif (row >= 426) then
-			color <= yellow;
-		elsif (column <= 213) then
-			color <= red;
-		elsif (column <= 426) then
-			color <= green;
-		else 
-			color <= blue;
+		elsif (switch_7 <= '0') and (switch_6 <= '0') then
+			if (row >= 326) then
+				color <= yellow;
+			elsif (column <= 213) then
+				color <= red;
+			elsif (column <= 426) then
+				color <= green;
+			else 
+				color <= blue;
+			end if;
+		
+		elsif (switch_7 <= '1') and (switch_6 <= '0') then
+			if (row >= 326) then
+				color <= red;
+			elsif (column <= 213) then
+				color <= green;
+			elsif (column <= 426) then
+				color <= blue;
+			else 
+				color <= yellow;
+			end if;
+			
+		elsif (switch_7 <= '0') and (switch_6 <= '1') then
+			if (row >= 326) then
+				color <= green;
+			elsif (column <= 213) then
+				color <= blue;
+			elsif (column <= 426) then
+				color <= yellow;
+			else 
+				color <= red;
+			end if;	
+			
+		elsif (switch_7 <= '1') and (switch_6 <= '1') then
+			if (row >= 326) then
+				color <= blue;
+			elsif (column <= 213) then
+				color <= yellow;
+			elsif (column <= 426) then
+				color <= red;
+			else 
+				color <= green;
+			end if;	
+		
 		end if;	
 	end process;	
 	
@@ -84,9 +122,9 @@ begin
 				g <= "00000000";
 				b <= "00000000";
 			when yellow =>
-				r <= "00000000";
+				r <= "11111111";
 				g <= "11111111";
-				b <= "11111111";	
+				b <= "00000000";	
 			end case;	
 		end process;
 		

@@ -32,6 +32,8 @@ use UNISIM.VComponents.all;
 entity atlys_lab_video is
     Port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
+			  SW6: in STD_LOGIC;
+			  SW7: in STD_LOGIC;			  
            tmds : out  STD_LOGIC_VECTOR (3 downto 0);
            tmdsb : out  STD_LOGIC_VECTOR (3 downto 0));
 end atlys_lab_video;
@@ -55,7 +57,9 @@ COMPONENT pixel_gen
 	PORT(
 		row : IN unsigned(10 downto 0);
 		column : IN unsigned(10 downto 0);
-		blank : IN std_logic;          
+		blank : IN std_logic;       
+		switch_6: in STD_LOGIC;
+		switch_7: in STD_LOGIC;			  
 		r : OUT std_logic_vector(7 downto 0);
 		g : OUT std_logic_vector(7 downto 0);
 		b : OUT std_logic_vector(7 downto 0)
@@ -114,6 +118,8 @@ begin
 		row => top_row,
 		column => top_column,
 		blank => top_blank,
+		switch_6 => SW6,
+		switch_7 => SW7,			  
 		r => red,
 		g => green,
 		b => blue
