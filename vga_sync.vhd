@@ -90,8 +90,8 @@ Inst_v_sync_gen: v_sync_gen PORT MAP(
 		row => row
 	);
 	
-	blank <= '0' when (v_blank = '0' and h_blank = '0')
-					 else '1';
+	blank <= (v_blank or h_blank);
+					 
 	
 end Structural;
 
