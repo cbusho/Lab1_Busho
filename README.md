@@ -10,7 +10,8 @@ in the H sync and V sync modules
 Connected the h and v sync modules in the VGA sync module
 Connected the VGA and pixel gen modules in the top (atlys) shell
 
-State Transition Diagram in prelab
+- Block Diagram 
+![alt text](https://github.com/cbusho/Lab1_Busho/blob/master/Block%20Diagram.png "Block Diagram")
 
 ## Test/Debug
 
