@@ -68,6 +68,14 @@ Inst_h_sync_gen: h_sync_gen PORT MAP(
 
 - `h and v sync functionality`
   - Created a test bench for each.
+  - HSync
+  
+![alt text](HSyncTestBench.png "HSync")
+  
+  - VSync
+  	
+![alt text](VSyncTestBench.png "HSync")
+
   - Measured state lengths and signals upon state transitions
   - In V sync test bench included an h sync module for h_completed signal
   - Compared output signals to working code to ensure functionality
