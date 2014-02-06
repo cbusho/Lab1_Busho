@@ -25,7 +25,7 @@ State Transition Diagram in prelab
   
 - `synthesizer` 
   - For reasons unknown optimization preferences can make your entire project not work
-  - (used area optimization)
+  - (used area optimization not speed optimization)
   
 ## Conclusion
 I learned that creating good VHDL code is very different than TPL code. Making sure that students
