@@ -13,6 +13,12 @@ Connected the VGA and pixel gen modules in the top (atlys) shell
 - Block Diagram 
 ![alt text](https://github.com/cbusho/Lab1_Busho/blob/master/Block%20Diagram.png "Block Diagram")
 
+- H_sync state diagram
+![alt text](https://github.com/cbusho/Lab1_Busho/blob/master/Hsync%20State%20Diagram.png "Block Diagram")
+
+- H_sync state diagram
+![alt text](https://github.com/cbusho/Lab1_Busho/blob/master/Vsync%20State%20Diagram.png "Block Diagram")
+
 ## Test/Debug
 
 - `h and v sync functionality`
